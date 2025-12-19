@@ -99,5 +99,10 @@ Wankas_v2/
    npm run dev
    ```
 
-## 📄 Licencia
-Este proyecto es propiedad de Wankas y está destinado para uso interno y desarrollo académico/profesional.
+## 📄 Integrantes
+Castilla Huanca Marco Renato
+Cueva Alcala Axel Andree
+Poma Gutierrez Gabriel
+Taco Zavala Miguel Angel
+Basualdo Ale Marcos Luis
+De la Cruz Meza Angel Luis Kallpa
