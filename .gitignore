@@ -1,0 +1,34 @@
+# Maven / Spring Boot
+backend/target/
+
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+
+# IDEs
+*.iml
+.idea/
+.vscode/
+.project
+.classpath
+frontend/package-lock.json
+frontend/package.json
+
+
+backend/insert_resultados_llamada.sql
+
+# Environment variables
+.env
+backend/.env
+
+# Firebase credentials (sensitive)
+*firebase*.json
+marketing-crm-93b99-firebase-adminsdk-fbsvc-45b38eae6a.json
+
+# Logs
+logs/
+backend/logs/
+*.log
+
+.env

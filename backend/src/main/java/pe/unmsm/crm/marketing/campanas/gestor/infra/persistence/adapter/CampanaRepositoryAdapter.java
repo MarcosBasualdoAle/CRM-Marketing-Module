@@ -1,0 +1,132 @@
+package pe.unmsm.crm.marketing.campanas.gestor.infra.persistence.adapter;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import pe.unmsm.crm.marketing.campanas.gestor.domain.model.Campana;
+import pe.unmsm.crm.marketing.campanas.gestor.domain.model.CanalEjecucion;
+import pe.unmsm.crm.marketing.campanas.gestor.domain.model.Prioridad;
+import pe.unmsm.crm.marketing.campanas.gestor.domain.port.output.CampanaRepositoryPort;
+import pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoCampana;
+import pe.unmsm.crm.marketing.campanas.gestor.infra.persistence.repository.JpaCampanaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+/**
+ * Adaptador que implementa el puerto CampanaRepositoryPort
+ * delegando a JpaCampanaRepository (Spring Data JPA).
+ */
+@Component
+@RequiredArgsConstructor
+public class CampanaRepositoryAdapter implements CampanaRepositoryPort {
+
+    private final JpaCampanaRepository jpaRepository;
+
+    @Override
+    public Campana save(Campana campana) {
+        return jpaRepository.save(campana);
+    }
+
+    @Override
+    public Optional<Campana> findById(Long idCampana) {
+        return jpaRepository.findById(idCampana);
+    }
+
+    @Override
+    public List<Campana> findAll() {
+        return jpaRepository.findAll();
+    }
+
+    @Override
+    public Page<Campana> findByFiltros(String nombre, String estado, String prioridad, String canalEjecucion,
+            Boolean esArchivado, Pageable pageable) {
+        EstadoCampana estadoObj = null;
+        if (estado != null && !estado.isEmpty()) {
+            estadoObj = convertirEstado(estado);
+        }
+
+        Prioridad prioridadObj = null;
+        if (prioridad != null && !prioridad.isEmpty()) {
+            try {
+                prioridadObj = Prioridad.valueOf(prioridad);
+            } catch (IllegalArgumentException e) {
+                // Ignorar prioridad inválida
+            }
+        }
+
+        CanalEjecucion canalObj = null;
+        if (canalEjecucion != null && !canalEjecucion.isEmpty()) {
+            try {
+                canalObj = CanalEjecucion.valueOf(canalEjecucion);
+            } catch (IllegalArgumentException e) {
+                // Si el canal no es válido, podríamos ignorarlo o lanzar error.
+                // Aquí lo ignoramos (null) para que no filtre por canal inválido.
+            }
+        }
+
+        return jpaRepository.findByFiltros(nombre, estadoObj, prioridadObj, canalObj, esArchivado, pageable);
+    }
+
+    private EstadoCampana convertirEstado(String nombreEstado) {
+        return switch (nombreEstado) {
+            case "Borrador" -> new pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoBorrador();
+            case "Programada" -> new pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoProgramada();
+            case "Vigente" -> new pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoVigente();
+            case "Pausada" -> new pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoPausada();
+            case "Finalizada" -> new pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoFinalizada();
+            case "Cancelada" -> new pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoCancelada();
+            default -> null; // O lanzar excepción
+        };
+    }
+
+    @Override
+    public void deleteById(Long idCampana) {
+        jpaRepository.deleteById(idCampana);
+    }
+
+    @Override
+    public boolean existsById(Long idCampana) {
+        return jpaRepository.existsById(idCampana);
+    }
+
+    @Override
+    public List<Campana> findProgramadasParaActivar(java.time.LocalDateTime ahora) {
+        return jpaRepository.findProgramadasParaActivar(
+                new pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoProgramada(), ahora);
+    }
+
+    @Override
+    public List<Campana> findProgramadasPendientes() {
+        return jpaRepository.findProgramadasPendientes(
+                new pe.unmsm.crm.marketing.campanas.gestor.domain.state.EstadoProgramada());
+    }
+
+    @Override
+    public List<Object[]> countByEstadoBetween(java.time.LocalDateTime start, java.time.LocalDateTime end) {
+        return jpaRepository.countByEstadoBetween(start, end);
+    }
+
+    @Override
+    public List<Object[]> countByCanalBetween(java.time.LocalDateTime start, java.time.LocalDateTime end) {
+        return jpaRepository.countByCanalBetween(start, end);
+    }
+
+    @Override
+    public List<Object[]> countBySegmentoBetween(java.time.LocalDateTime start, java.time.LocalDateTime end) {
+        return jpaRepository.countBySegmentoBetween(start, end);
+    }
+
+    @Override
+    public List<Object[]> countByPlantillaBetween(java.time.LocalDateTime start, java.time.LocalDateTime end) {
+        return jpaRepository.countByPlantillaBetween(start, end);
+    }
+
+    @Override
+    public List<Campana> findByFechaCreacionBetweenOrderByFechaCreacionAsc(java.time.LocalDateTime start,
+            java.time.LocalDateTime end) {
+        return jpaRepository.findByFechaCreacionBetweenOrderByFechaCreacionAsc(start, end);
+    }
+}

@@ -1,0 +1,82 @@
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: INFO
+        type:
+          descriptor:
+            sql:
+              BasicBinder: INFO
+
+spring:
+  jackson:
+    time-zone: America/Lima
+  datasource:
+    url: jdbc:mysql://${MYSQLHOST}:${MYSQLPORT}/${MYSQLDATABASE}?useSSL=false&serverTimezone=UTC
+    username: ${MYSQLUSER}
+    password: ${MYSQLPASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 100
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+
+cache:
+  type: caffeine
+  caffeine:
+    spec: maximumSize=1000,expireAfterWrite=24h
+
+# CONFIGURACIÓN DE RESEND (Email Service)
+app:
+  resend:
+    api-key: ${RESEND_API_KEY:re_ZgYK2KSi_6jxMLboXDnfDZ99u3UurFbYv}
+    from-email: ${RESEND_FROM_EMAIL:onboarding@resend.dev}
+    from-name: ${RESEND_FROM_NAME:Marketing CRM UNMSM}
+    # Webhook signing secret - se obtiene al crear webhook en Resend Dashboard
+    webhook-secret: ${RESEND_WEBHOOK_SECRET:}
+  
+  # URL del backend (para tracking de clics y unsubscribe)
+  backend:
+    url: ${BACKEND_URL:http://localhost:8080}
+  
+  # CONFIGURACIÓN DE NOTIFICACIÓN EXTERNA A VENTAS
+  external-lead-notification:
+    enabled: ${EXTERNAL_LEAD_NOTIFICATION_ENABLED:true}
+    ventas-url: ${VENTAS_URL:https://mod-ventas.onrender.com}
+    api-key: ${EXTERNAL_LEAD_API_KEY:}
+    timeout-seconds: ${EXTERNAL_LEAD_TIMEOUT:5}
+  encuestas_frontend: 
+    url: ${ENCUESTAS_FRONTEND_URL:https://marketing-crm-k35v.vercel.app}
+
+  ventas:
+    url: ${VENTAS_URL:https://mod-ventas.onrender.com}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  port: 8080
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:MySecretKeyForJWTTokenGenerationAndValidationShouldBeAtLeast256BitsLong}
+  expiration: 86400000 # 24 horas en milisegundos
+  header: Authorization
+  prefix: "Bearer "
