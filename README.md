@@ -100,9 +100,9 @@ Wankas_v2/
    ```
 
 ## 📄 Integrantes
-Castilla Huanca Marco Renato
-Cueva Alcala Axel Andree
-Poma Gutierrez Gabriel
-Taco Zavala Miguel Angel
-Basualdo Ale Marcos Luis
+Castilla Huanca Marco Renato,
+Cueva Alcala Axel Andree,
+Poma Gutierrez Gabriel,
+Taco Zavala Miguel Angel,
+Basualdo Ale Marcos Luis,
 De la Cruz Meza Angel Luis Kallpa
